@@ -27,7 +27,18 @@ export default class TableFromForm extends TableGenerator {
     });
     inputs.addEventListener("click", e => {
       e.preventDefault();
-      if (e.target.closest(".addField")) {
+      const removeCol = e.target.closest(".removeCol");
+      e.stopPropagation();
+      if (removeCol) {
+        const colNumber = removeCol.getAttribute("col");
+        const colSelector = `[col="${colNumber}"]`;
+        const col = inputs.querySelectorAll(colSelector);
+        const removeBtns = inputs.querySelectorAll(".removeCol");
+        console.log(removeBtns.length);
+        if (removeBtns.length === 2)
+          removeBtns.forEach(btn => btn.setAttribute("disabled", true));
+        col.forEach(element => element.remove());
+      } else if (e.target.closest(".addField")) {
         e.stopPropagation();
         this.setRemoveAttributeDisabled();
         const currentDiv = e.target.closest(".divRow");
@@ -41,6 +52,7 @@ export default class TableFromForm extends TableGenerator {
         this.setRemoveAttributeDisabled();
       } else if (e.target.closest(".addCol")) {
         e.stopPropagation();
+        inputs.querySelector(".removeCol").removeAttribute("disabled");
         const colNumber = container.querySelectorAll(".title").length;
         this.generateCol(colNumber);
       }
@@ -68,7 +80,12 @@ export default class TableFromForm extends TableGenerator {
     const newTitle = this.generateNewInput(colNumber);
     newTitle.classList.add("title");
     newTitle.setAttribute("required", true);
+    const removeBtn = document.createElement("button");
+    removeBtn.innerText = "-";
+    removeBtn.setAttribute("class", "btn btn-danger removeCol mt-2 mb-2");
+    removeBtn.setAttribute("col", colNumber);
     this.elements.titlesContainer.appendChild(newTitle);
+    this.elements.titlesContainer.appendChild(removeBtn);
 
     this.elements.container.querySelectorAll(".divRow").forEach(col => {
       const newInput = this.generateNewInput(colNumber);
@@ -155,7 +172,8 @@ export default class TableFromForm extends TableGenerator {
       const index = this.options.titles.indexOf(element);
       inputText += `<input type='text' value="${element}"
       placeholder='${"input " + (index + 1)}' 
-      class='title input col form-control' col='${index}' required>`;
+      class='title input col form-control' col='${index}' required>
+      <button class="btn btn-danger removeCol mt-2 mb-2" col="${index}">-</button>`;
     });
     inputText += `</div>
       <div class="div-green-btn col-3 col-lg-2 mt-1">
