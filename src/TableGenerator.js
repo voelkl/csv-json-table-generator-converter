@@ -172,7 +172,7 @@ export default class TableGenerator {
             <label class="custom-control-label" for="l">landscape</label>
           </span>
           <span class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="p" name="pdf-orientation" class="custom-control-input ${this
+            <input type="radio" id="p" name="pdf-orientation" class="custom-control-input" ${this
               .orientation === "p" && "checked"}">
             <label class="custom-control-label" for="p">portrait</label>
           </span>
